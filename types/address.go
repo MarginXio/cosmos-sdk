@@ -14,7 +14,6 @@ import (
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/internal/conv"
-	"github.com/cosmos/cosmos-sdk/types/address"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -147,8 +146,8 @@ func VerifyAddressFormat(bz []byte) error {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownAddress, "addresses cannot be empty")
 	}
 
-	if len(bz) > address.MaxAddrLen {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "address max length is %d, got %d", address.MaxAddrLen, len(bz))
+	if len(bz) != 20 {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "address length must be %d, got %d", 20, len(bz))
 	}
 
 	return nil
