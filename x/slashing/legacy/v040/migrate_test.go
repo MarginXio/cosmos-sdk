@@ -21,21 +21,21 @@ func TestMigrate(t *testing.T) {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithJSONCodec(encodingConfig.Marshaler)
 
-	addr1, err := sdk.ConsAddressFromBech32("cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685")
+	addr1, err := sdk.ConsAddressFromBech32("0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35")
 	require.NoError(t, err)
-	addr2, err := sdk.ConsAddressFromBech32("cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph")
+	addr2, err := sdk.ConsAddressFromBech32("0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD")
 	require.NoError(t, err)
 
 	gs := v039slashing.GenesisState{
 		Params: v039slashing.DefaultParams(),
 		SigningInfos: map[string]v039slashing.ValidatorSigningInfo{
-			"cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph": {
+			"0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD": {
 				Address:             addr2,
 				IndexOffset:         615501,
 				MissedBlocksCounter: 1,
 				Tombstoned:          false,
 			},
-			"cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685": {
+			"0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35": {
 				Address:             addr1,
 				IndexOffset:         2,
 				MissedBlocksCounter: 2,
@@ -43,13 +43,13 @@ func TestMigrate(t *testing.T) {
 			},
 		},
 		MissedBlocks: map[string][]v039slashing.MissedBlock{
-			"cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph": {
+			"0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD": {
 				{
 					Index:  2,
 					Missed: true,
 				},
 			},
-			"cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685": {
+			"0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35": {
 				{
 					Index:  3,
 					Missed: true,
@@ -64,14 +64,14 @@ func TestMigrate(t *testing.T) {
 
 	migrated := v040slashing.Migrate(gs)
 	// Check that in `signing_infos` and `missed_blocks`, the address
-	// cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685
+	// 0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35
 	// should always come before the address
-	// cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph
+	// 0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD
 	// (in alphabetic order, basically).
 	expected := `{
   "missed_blocks": [
     {
-      "address": "cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685",
+      "address": "0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35",
       "missed_blocks": [
         {
           "index": "3",
@@ -84,7 +84,7 @@ func TestMigrate(t *testing.T) {
       ]
     },
     {
-      "address": "cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph",
+      "address": "0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD",
       "missed_blocks": [
         {
           "index": "2",
@@ -95,16 +95,16 @@ func TestMigrate(t *testing.T) {
   ],
   "params": {
     "downtime_jail_duration": "600s",
-    "min_signed_per_window": "0.500000000000000000",
+    "min_signed_per_window": "0.500000",
     "signed_blocks_window": "100",
-    "slash_fraction_double_sign": "0.050000000000000000",
-    "slash_fraction_downtime": "0.010000000000000000"
+    "slash_fraction_double_sign": "0.050000",
+    "slash_fraction_downtime": "0.010000"
   },
   "signing_infos": [
     {
-      "address": "cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685",
+      "address": "0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35",
       "validator_signing_info": {
-        "address": "cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685",
+        "address": "0x7D712D9Ac341c87fEC61551B97Ab35125EF17f35",
         "index_offset": "2",
         "jailed_until": "0001-01-01T00:00:00Z",
         "missed_blocks_counter": "2",
@@ -113,9 +113,9 @@ func TestMigrate(t *testing.T) {
       }
     },
     {
-      "address": "cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph",
+      "address": "0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD",
       "validator_signing_info": {
-        "address": "cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph",
+        "address": "0x7E6B8a0740b3e04C10bCD72b15fb10dfcC5493AD",
         "index_offset": "615501",
         "jailed_until": "0001-01-01T00:00:00Z",
         "missed_blocks_counter": "1",

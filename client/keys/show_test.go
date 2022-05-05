@@ -30,7 +30,7 @@ func Test_multiSigKey_Properties(t *testing.T) {
 	require.Equal(t, "myMultisig", tmp.GetName())
 	require.Equal(t, keyring.TypeMulti, tmp.GetType())
 	require.Equal(t, "D3923267FA8A3DD367BB768FA8BDC8FF7F89DA3F", tmp.GetPubKey().Address().String())
-	require.Equal(t, "cosmos16wfryel63g7axeamw68630wglalcnk3l0zuadc", sdk.MustBech32ifyAddressBytes("cosmos", tmp.GetAddress()))
+	require.Equal(t, "0xd3923267fa8a3dD367BB768fA8bdc8ff7F89da3F", sdk.MustBech32ifyAddressBytes("cosmos", tmp.GetAddress()))
 }
 
 func Test_showKeysCmd(t *testing.T) {
@@ -54,8 +54,8 @@ func Test_runShowCmd(t *testing.T) {
 		WithKeyring(kb)
 	ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)
 
-	cmd.SetArgs([]string{"invalid"})
-	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid is not a valid name or address: decoding bech32 failed: invalid bech32 string length 7")
+	//cmd.SetArgs([]string{"invalid"})
+	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid is not a valid name or address: invalid address length, expected: 42, got: 7")
 
 	cmd.SetArgs([]string{"invalid1", "invalid2"})
 	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid1 is not a valid name or address: decoding bech32 failed: invalid separator index 7")

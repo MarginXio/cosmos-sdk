@@ -64,7 +64,7 @@ func TestEvidenceAddressConversion(t *testing.T) {
 	tmEvidence := abci.Evidence{
 		Type: abci.EvidenceType_DUPLICATE_VOTE,
 		Validator: abci.Validator{
-			Address: []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Address: []byte{},
 			Power:   100,
 		},
 		Height:           1,

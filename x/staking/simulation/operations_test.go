@@ -82,13 +82,13 @@ func TestSimulateMsgCreateValidator(t *testing.T) {
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
-	require.Equal(t, "0.080000000000000000", msg.Commission.MaxChangeRate.String())
-	require.Equal(t, "0.080000000000000000", msg.Commission.MaxRate.String())
-	require.Equal(t, "0.019527679037870745", msg.Commission.Rate.String())
+	require.Equal(t, "0.034298", msg.Commission.MaxChangeRate.String())
+	require.Equal(t, "0.080000", msg.Commission.MaxRate.String())
+	require.Equal(t, "0.063007", msg.Commission.Rate.String())
 	require.Equal(t, types.TypeMsgCreateValidator, msg.Type())
 	require.Equal(t, []byte{0xa, 0x20, 0x51, 0xde, 0xbd, 0xe8, 0xfa, 0xdf, 0x4e, 0xfc, 0x33, 0xa5, 0x16, 0x94, 0xf6, 0xee, 0xd3, 0x69, 0x7a, 0x7a, 0x1c, 0x2d, 0x50, 0xb6, 0x2, 0xf7, 0x16, 0x4e, 0x66, 0x9f, 0xff, 0x38, 0x91, 0x9b}, msg.Pubkey.Value)
-	require.Equal(t, "cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r", msg.DelegatorAddress)
-	require.Equal(t, "cosmosvaloper1ghekyjucln7y67ntx7cf27m9dpuxxemnsvnaes", msg.ValidatorAddress)
+	require.Equal(t, "0x45f3624b98fCfc4D7A6b37B0957b656878636773", msg.DelegatorAddress)
+	require.Equal(t, "0x45f3624b98fCfc4D7A6b37B0957b656878636773", msg.ValidatorAddress)
 	require.Len(t, futureOperations, 0)
 }
 
@@ -119,13 +119,13 @@ func TestSimulateMsgEditValidator(t *testing.T) {
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
-	require.Equal(t, "0.280623462081924936", msg.CommissionRate.String())
+	require.Equal(t, "0.560968", msg.CommissionRate.String())
 	require.Equal(t, "xKGLwQvuyN", msg.Description.Moniker)
 	require.Equal(t, "SlcxgdXhhu", msg.Description.Identity)
 	require.Equal(t, "WeLrQKjLxz", msg.Description.Website)
 	require.Equal(t, "rBqDOTtGTO", msg.Description.SecurityContact)
 	require.Equal(t, types.TypeMsgEditValidator, msg.Type())
-	require.Equal(t, "cosmosvaloper1tnh2q55v8wyygtt9srz5safamzdengsn9dsd7z", msg.ValidatorAddress)
+	require.Equal(t, "0x5cEEa0528c3b88442d6580c548753DD89b99a213", msg.ValidatorAddress)
 	require.Len(t, futureOperations, 0)
 }
 
@@ -157,11 +157,11 @@ func TestSimulateMsgDelegate(t *testing.T) {
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
-	require.Equal(t, "cosmos1ghekyjucln7y67ntx7cf27m9dpuxxemn4c8g4r", msg.DelegatorAddress)
+	require.Equal(t, "0x45f3624b98fCfc4D7A6b37B0957b656878636773", msg.DelegatorAddress)
 	require.Equal(t, "98100858108421259236", msg.Amount.Amount.String())
 	require.Equal(t, "stake", msg.Amount.Denom)
 	require.Equal(t, types.TypeMsgDelegate, msg.Type())
-	require.Equal(t, "cosmosvaloper1tnh2q55v8wyygtt9srz5safamzdengsn9dsd7z", msg.ValidatorAddress)
+	require.Equal(t, "0x5cEEa0528c3b88442d6580c548753DD89b99a213", msg.ValidatorAddress)
 	require.Len(t, futureOperations, 0)
 }
 
@@ -202,11 +202,11 @@ func TestSimulateMsgUndelegate(t *testing.T) {
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
-	require.Equal(t, "cosmos1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7u4x9a0", msg.DelegatorAddress)
+	require.Equal(t, "0x09dD840E43A8652e15E646b85C2014a34cE01e5E", msg.DelegatorAddress)
 	require.Equal(t, "280623462081924937", msg.Amount.Amount.String())
 	require.Equal(t, "stake", msg.Amount.Denom)
 	require.Equal(t, types.TypeMsgUndelegate, msg.Type())
-	require.Equal(t, "cosmosvaloper1tnh2q55v8wyygtt9srz5safamzdengsn9dsd7z", msg.ValidatorAddress)
+	require.Equal(t, "0x5cEEa0528c3b88442d6580c548753DD89b99a213", msg.ValidatorAddress)
 	require.Len(t, futureOperations, 0)
 
 }
@@ -251,12 +251,12 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
-	require.Equal(t, "cosmos12gwd9jchc69wck8dhstxgwz3z8qs8yv67ps8mu", msg.DelegatorAddress)
+	require.Equal(t, "0x521cD2CB17c68aec58EdBc1664385111C103919a", msg.DelegatorAddress)
 	require.Equal(t, "489348507626016866", msg.Amount.Amount.String())
 	require.Equal(t, "stake", msg.Amount.Denom)
 	require.Equal(t, types.TypeMsgBeginRedelegate, msg.Type())
-	require.Equal(t, "cosmosvaloper1h6a7shta7jyc72hyznkys683z98z36e0zdk8g9", msg.ValidatorDstAddress)
-	require.Equal(t, "cosmosvaloper17s94pzwhsn4ah25tec27w70n65h5t2scgxzkv2", msg.ValidatorSrcAddress)
+	require.Equal(t, "0xBEbBe85D7Df4898F2ae414EC4868f1114e28eb2f", msg.ValidatorDstAddress)
+	require.Equal(t, "0xf40b5089d784EBDBAa8BCE15e779F3D52f45aA18", msg.ValidatorSrcAddress)
 	require.Len(t, futureOperations, 0)
 
 }

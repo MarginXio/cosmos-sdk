@@ -94,12 +94,12 @@ func (s *decimalTestSuite) TestDecString() {
 		d    sdk.Dec
 		want string
 	}{
-		{sdk.NewDec(0), "0.000000000000000000"},
-		{sdk.NewDec(1), "1.000000000000000000"},
-		{sdk.NewDec(10), "10.000000000000000000"},
-		{sdk.NewDec(12340), "12340.000000000000000000"},
-		{sdk.NewDecWithPrec(12340, 4), "1.234000000000000000"},
-		{sdk.NewDecWithPrec(12340, 5), "0.123400000000000000"},
+		{sdk.NewDec(0), "0.000000"},
+		{sdk.NewDec(1), "1.000000"},
+		{sdk.NewDec(10), "10.000000"},
+		{sdk.NewDec(12340), "12340.000000"},
+		{sdk.NewDecWithPrec(12340, 4), "1.234000"},
+		{sdk.NewDecWithPrec(12340, 5), "0.123400"},
 		{sdk.NewDecWithPrec(12340, 8), "0.000123400000000000"},
 		{sdk.NewDecWithPrec(1009009009009009009, 17), "10.090090090090090090"},
 	}
@@ -113,12 +113,12 @@ func (s *decimalTestSuite) TestDecFloat64() {
 		d    sdk.Dec
 		want float64
 	}{
-		{sdk.NewDec(0), 0.000000000000000000},
-		{sdk.NewDec(1), 1.000000000000000000},
-		{sdk.NewDec(10), 10.000000000000000000},
-		{sdk.NewDec(12340), 12340.000000000000000000},
-		{sdk.NewDecWithPrec(12340, 4), 1.234000000000000000},
-		{sdk.NewDecWithPrec(12340, 5), 0.123400000000000000},
+		{sdk.NewDec(0), 0.000000},
+		{sdk.NewDec(1), 1.000000},
+		{sdk.NewDec(10), 10.000000},
+		{sdk.NewDec(12340), 12340.000000},
+		{sdk.NewDecWithPrec(12340, 4), 1.234000},
+		{sdk.NewDecWithPrec(12340, 5), 0.123400},
 		{sdk.NewDecWithPrec(12340, 8), 0.000123400000000000},
 		{sdk.NewDecWithPrec(1009009009009009009, 17), 10.090090090090090090},
 	}
@@ -311,7 +311,7 @@ func (s *decimalTestSuite) TestStringOverflow() {
 	s.Require().NoError(err)
 	dec3 := dec1.Add(dec2)
 	s.Require().Equal(
-		"19844653375691057515930281852116324640.000000000000000000",
+		"19844653375691057515930281852116324640.000000",
 		dec3.String(),
 	)
 }
@@ -338,14 +338,14 @@ func (s *decimalTestSuite) TestDecCeil() {
 		input    sdk.Dec
 		expected sdk.Dec
 	}{
-		{sdk.NewDecWithPrec(1000000000000000, sdk.Precision), sdk.NewDec(1)},      // 0.001 => 1.0
-		{sdk.NewDecWithPrec(-1000000000000000, sdk.Precision), sdk.ZeroDec()},     // -0.001 => 0.0
+		{sdk.NewDecWithPrec(1000, sdk.Precision), sdk.NewDec(1)},      // 0.001 => 1.0
+		{sdk.NewDecWithPrec(-1000, sdk.Precision), sdk.ZeroDec()},     // -0.001 => 0.0
 		{sdk.ZeroDec(), sdk.ZeroDec()},                                            // 0.0 => 0.0
-		{sdk.NewDecWithPrec(900000000000000000, sdk.Precision), sdk.NewDec(1)},    // 0.9 => 1.0
-		{sdk.NewDecWithPrec(4001000000000000000, sdk.Precision), sdk.NewDec(5)},   // 4.001 => 5.0
-		{sdk.NewDecWithPrec(-4001000000000000000, sdk.Precision), sdk.NewDec(-4)}, // -4.001 => -4.0
-		{sdk.NewDecWithPrec(4700000000000000000, sdk.Precision), sdk.NewDec(5)},   // 4.7 => 5.0
-		{sdk.NewDecWithPrec(-4700000000000000000, sdk.Precision), sdk.NewDec(-4)}, // -4.7 => -4.0
+		{sdk.NewDecWithPrec(900000, sdk.Precision), sdk.NewDec(1)},    // 0.9 => 1.0
+		{sdk.NewDecWithPrec(4001000, sdk.Precision), sdk.NewDec(5)},   // 4.001 => 5.0
+		{sdk.NewDecWithPrec(-4001000, sdk.Precision), sdk.NewDec(-4)}, // -4.001 => -4.0
+		{sdk.NewDecWithPrec(4700000, sdk.Precision), sdk.NewDec(5)},   // 4.7 => 5.0
+		{sdk.NewDecWithPrec(-4700000, sdk.Precision), sdk.NewDec(-4)}, // -4.7 => -4.0
 	}
 
 	for i, tc := range testCases {
@@ -428,24 +428,24 @@ func (s *decimalTestSuite) TestDecSortableBytes() {
 		d    sdk.Dec
 		want []byte
 	}{
-		{sdk.NewDec(0), []byte("000000000000000000.000000000000000000")},
-		{sdk.NewDec(1), []byte("000000000000000001.000000000000000000")},
-		{sdk.NewDec(10), []byte("000000000000000010.000000000000000000")},
-		{sdk.NewDec(12340), []byte("000000000000012340.000000000000000000")},
-		{sdk.NewDecWithPrec(12340, 4), []byte("000000000000000001.234000000000000000")},
-		{sdk.NewDecWithPrec(12340, 5), []byte("000000000000000000.123400000000000000")},
-		{sdk.NewDecWithPrec(12340, 8), []byte("000000000000000000.000123400000000000")},
-		{sdk.NewDecWithPrec(1009009009009009009, 17), []byte("000000000000000010.090090090090090090")},
-		{sdk.NewDecWithPrec(-1009009009009009009, 17), []byte("-000000000000000010.090090090090090090")},
-		{sdk.NewDec(1000000000000000000), []byte("max")},
-		{sdk.NewDec(-1000000000000000000), []byte("--")},
+		{sdk.NewDec(0), []byte("000000.000000")},
+		{sdk.NewDec(1), []byte("000001.000000")},
+		{sdk.NewDec(10), []byte("000010.000000")},
+		{sdk.NewDec(12340), []byte("012340.000000")},
+		{sdk.NewDecWithPrec(12340, 4), []byte("000001.234000")},
+		{sdk.NewDecWithPrec(12340, 5), []byte("000000.123400")},
+		{sdk.NewDecWithPrec(12340, 8), []byte("000000.000123400000000000")},
+		{sdk.NewDecWithPrec(1009009009009009009, 17), []byte("000010.090090090090090090")},
+		{sdk.NewDecWithPrec(-1009009009009009009, 17), []byte("-000010.090090090090090090")},
+		{sdk.NewDec(1000000), []byte("max")},
+		{sdk.NewDec(-1000000), []byte("--")},
 	}
 	for tcIndex, tc := range tests {
 		s.Require().Equal(tc.want, sdk.SortableDecBytes(tc.d), "bad String(), index: %v", tcIndex)
 	}
 
-	s.Require().Panics(func() { sdk.SortableDecBytes(sdk.NewDec(1000000000000000001)) })
-	s.Require().Panics(func() { sdk.SortableDecBytes(sdk.NewDec(-1000000000000000001)) })
+	s.Require().Panics(func() { sdk.SortableDecBytes(sdk.NewDec(1000001)) })
+	s.Require().Panics(func() { sdk.SortableDecBytes(sdk.NewDec(-1000001)) })
 }
 
 func (s *decimalTestSuite) TestDecEncoding() {
@@ -463,14 +463,14 @@ func (s *decimalTestSuite) TestDecEncoding() {
 	}{
 		{
 			sdk.NewDec(0), "30",
-			"\"0.000000000000000000\"",
-			"\"0.000000000000000000\"\n",
+			"\"0.000000\"",
+			"\"0.000000\"\n",
 		},
 		{
 			sdk.NewDecWithPrec(4, 2),
 			"3430303030303030303030303030303030",
-			"\"0.040000000000000000\"",
-			"\"0.040000000000000000\"\n",
+			"\"0.040000\"",
+			"\"0.040000\"\n",
 		},
 		{
 			sdk.NewDecWithPrec(-4, 2),

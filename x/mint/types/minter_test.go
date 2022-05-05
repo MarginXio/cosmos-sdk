@@ -34,11 +34,11 @@ func TestNextInflation(t *testing.T) {
 
 		// test 7% minimum stop (testing with 100% bonded)
 		{sdk.OneDec(), sdk.NewDecWithPrec(7, 2), sdk.ZeroDec()},
-		{sdk.OneDec(), sdk.NewDecWithPrec(700000001, 10), sdk.NewDecWithPrec(-1, 10)},
+		{sdk.OneDec(), sdk.NewDecWithPrec(7007, 5), sdk.NewDecWithPrec(0, 5)},
 
 		// test 20% maximum stop (testing with 0% bonded)
 		{sdk.ZeroDec(), sdk.NewDecWithPrec(20, 2), sdk.ZeroDec()},
-		{sdk.ZeroDec(), sdk.NewDecWithPrec(1999999999, 10), sdk.NewDecWithPrec(1, 10)},
+		{sdk.ZeroDec(), sdk.NewDecWithPrec(19999, 5), sdk.NewDecWithPrec(0, 5)},
 
 		// perfect balance shouldn't change inflation
 		{sdk.NewDecWithPrec(67, 2), sdk.NewDecWithPrec(15, 2), sdk.ZeroDec()},
@@ -124,7 +124,7 @@ func BenchmarkNextAnnualProvisions(b *testing.B) {
 	b.ReportAllocs()
 	minter := InitialMinter(sdk.NewDecWithPrec(1, 1))
 	params := DefaultParams()
-	totalSupply := sdk.NewInt(100000000000000)
+	totalSupply := sdk.NewInt(100)
 
 	// run the NextAnnualProvisions function b.N times
 	for n := 0; n < b.N; n++ {

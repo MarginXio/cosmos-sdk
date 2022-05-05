@@ -122,8 +122,8 @@ func (s *decCoinTestSuite) TestFilteredZeroDecCoins() {
 				{"testd", sdk.NewDec(4)},
 				{"teste", sdk.NewDec(5)},
 			},
-			original: "1.000000000000000000testa,2.000000000000000000testb,3.000000000000000000testc,4.000000000000000000testd,5.000000000000000000teste",
-			expected: "1.000000000000000000testa,2.000000000000000000testb,3.000000000000000000testc,4.000000000000000000testd,5.000000000000000000teste",
+			original: "1.000000testa,2.000000testb,3.000000testc,4.000000testd,5.000000teste",
+			expected: "1.000000testa,2.000000testb,3.000000testc,4.000000testd,5.000000teste",
 		},
 		{
 			name: "zero coin in middle",
@@ -134,8 +134,8 @@ func (s *decCoinTestSuite) TestFilteredZeroDecCoins() {
 				{"testd", sdk.NewDec(4)},
 				{"teste", sdk.NewDec(5)},
 			},
-			original: "1.000000000000000000testa,2.000000000000000000testb,0.000000000000000000testc,4.000000000000000000testd,5.000000000000000000teste",
-			expected: "1.000000000000000000testa,2.000000000000000000testb,4.000000000000000000testd,5.000000000000000000teste",
+			original: "1.000000testa,2.000000testb,0.000000testc,4.000000testd,5.000000teste",
+			expected: "1.000000testa,2.000000testb,4.000000testd,5.000000teste",
 		},
 		{
 			name: "zero coin end (unordered)",
@@ -146,8 +146,8 @@ func (s *decCoinTestSuite) TestFilteredZeroDecCoins() {
 				{"testd", sdk.NewDec(4)},
 				{"testb", sdk.NewDec(0)},
 			},
-			original: "5.000000000000000000teste,3.000000000000000000testc,1.000000000000000000testa,4.000000000000000000testd,0.000000000000000000testb",
-			expected: "1.000000000000000000testa,3.000000000000000000testc,4.000000000000000000testd,5.000000000000000000teste",
+			original: "5.000000teste,3.000000testc,1.000000testa,4.000000testd,0.000000testb",
+			expected: "1.000000testa,3.000000testc,4.000000testd,5.000000teste",
 		},
 	}
 
@@ -354,33 +354,33 @@ func (s *decCoinTestSuite) TestParseDecCoins() {
 		{"", nil, false},
 		{"4stake", sdk.DecCoins{sdk.NewDecCoinFromDec("stake", sdk.NewDecFromInt(sdk.NewInt(4)))}, false},
 		{"5.5atom,4stake", sdk.DecCoins{
-			sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5500000000000000000, sdk.Precision)),
+			sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5500000, sdk.Precision)),
 			sdk.NewDecCoinFromDec("stake", sdk.NewDec(4)),
 		}, false},
 		{"0.0stake", sdk.DecCoins{}, false}, // remove zero coins
 		{"10.0btc,1.0atom,20.0btc", nil, true},
 		{
 			"0.004STAKE",
-			sdk.DecCoins{sdk.NewDecCoinFromDec("STAKE", sdk.NewDecWithPrec(4000000000000000, sdk.Precision))},
+			sdk.DecCoins{sdk.NewDecCoinFromDec("STAKE", sdk.NewDecWithPrec(4000, sdk.Precision))},
 			false,
 		},
 		{
 			"0.004stake",
-			sdk.DecCoins{sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000000000000000, sdk.Precision))},
+			sdk.DecCoins{sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000, sdk.Precision))},
 			false,
 		},
 		{
 			"5.04atom,0.004stake",
 			sdk.DecCoins{
-				sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5040000000000000000, sdk.Precision)),
-				sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000000000000000, sdk.Precision)),
+				sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5040000, sdk.Precision)),
+				sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000, sdk.Precision)),
 			},
 			false,
 		},
 		{"0.0stake,0.004stake,5.04atom", // remove zero coins
 			sdk.DecCoins{
-				sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5040000000000000000, sdk.Precision)),
-				sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000000000000000, sdk.Precision)),
+				sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5040000, sdk.Precision)),
+				sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000, sdk.Precision)),
 			},
 			false,
 		},
@@ -405,10 +405,10 @@ func (s *decCoinTestSuite) TestDecCoinsString() {
 		{sdk.DecCoins{}, ""},
 		{
 			sdk.DecCoins{
-				sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5040000000000000000, sdk.Precision)),
-				sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000000000000000, sdk.Precision)),
+				sdk.NewDecCoinFromDec("atom", sdk.NewDecWithPrec(5040000, sdk.Precision)),
+				sdk.NewDecCoinFromDec("stake", sdk.NewDecWithPrec(4000, sdk.Precision)),
 			},
-			"5.040000000000000000atom,0.004000000000000000stake",
+			"5.040000atom,0.004000stake",
 		},
 	}
 
@@ -485,7 +485,7 @@ func (s *decCoinTestSuite) TestDecCoinsTruncateDecimal() {
 
 func (s *decCoinTestSuite) TestDecCoinsQuoDecTruncate() {
 	x := sdk.MustNewDecFromStr("1.00")
-	y := sdk.MustNewDecFromStr("10000000000000000000.00")
+	y := sdk.MustNewDecFromStr("10000000.00")
 
 	testCases := []struct {
 		coins  sdk.DecCoins
