@@ -54,11 +54,11 @@ func Test_runShowCmd(t *testing.T) {
 		WithKeyring(kb)
 	ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)
 
-	//cmd.SetArgs([]string{"invalid"})
+	cmd.SetArgs([]string{"invalid"})
 	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid is not a valid name or address: invalid address length, expected: 42, got: 7")
 
 	cmd.SetArgs([]string{"invalid1", "invalid2"})
-	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid1 is not a valid name or address: decoding bech32 failed: invalid separator index 7")
+	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid1 is not a valid name or address: invalid address length, expected: 42, got: 8")
 
 	fakeKeyName1 := "runShowCmd_Key1"
 	fakeKeyName2 := "runShowCmd_Key2"

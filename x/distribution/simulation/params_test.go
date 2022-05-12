@@ -19,9 +19,9 @@ func TestParamChanges(t *testing.T) {
 		simValue    string
 		subspace    string
 	}{
-		{"distribution/communitytax", "communitytax", "\"0.120000000000000000\"", "distribution"},
-		{"distribution/baseproposerreward", "baseproposerreward", "\"0.280000000000000000\"", "distribution"},
-		{"distribution/bonusproposerreward", "bonusproposerreward", "\"0.180000000000000000\"", "distribution"},
+		{"distribution/communitytax", "communitytax", "\"0.120000\"", "distribution"},
+		{"distribution/baseproposerreward", "baseproposerreward", "\"0.280000\"", "distribution"},
+		{"distribution/bonusproposerreward", "bonusproposerreward", "\"0.180000\"", "distribution"},
 	}
 
 	paramChanges := simulation.ParamChanges(r)
