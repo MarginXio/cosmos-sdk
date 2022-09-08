@@ -251,7 +251,16 @@ func (d Dec) Mul(d2 Dec) Dec {
 	return Dec{chopped}
 }
 
-// multiplication
+func (d Dec) MulAddOne(d2 Dec) Dec {
+	mul := new(big.Int).Mul(d.i, d2.i)
+	chopped := chopPrecisionAndRoundAddOne(mul)
+
+	if chopped.BitLen() > maxDecBitLen {
+		panic("Int overflow")
+	}
+	return Dec{chopped}
+}
+
 func (d Dec) MulRemoveRemainder(d2 Dec) Dec {
 	mul := new(big.Int).Mul(d.i, d2.i)
 	chopped := chopPrecisionAndRoundRemoveRemainder(mul)
@@ -308,7 +317,19 @@ func (d Dec) Quo(d2 Dec) Dec {
 	return Dec{chopped}
 }
 
-// quotient
+func (d Dec) QuoAddOne(d2 Dec) Dec {
+	// multiply precision twice
+	mul := new(big.Int).Mul(d.i, precisionReuse)
+	mul.Mul(mul, precisionReuse)
+
+	quo := new(big.Int).Quo(mul, d2.i)
+	chopped := chopPrecisionAndRoundAddOne(quo)
+	if chopped.BitLen() > maxDecBitLen {
+		panic("Int overflow")
+	}
+	return Dec{chopped}
+}
+
 func (d Dec) QuoRemoveRemainder(d2 Dec) Dec {
 	// multiply precision twice
 	mul := new(big.Int).Mul(d.i, precisionReuse)
@@ -580,6 +601,25 @@ func chopPrecisionAndRoundRemoveRemainder(d *big.Int) *big.Int {
 	if rem.Sign() == 0 { // remainder is zero
 		return quo
 	}
+	return quo
+}
+
+func chopPrecisionAndRoundAddOne(d *big.Int) *big.Int {
+	// remove the negative and add it back when returning
+	if d.Sign() == -1 {
+		// make d positive, compute chopped value, and then un-mutate d
+		d = d.Neg(d)
+		d = chopPrecisionAndRoundAddOne(d)
+		d = d.Neg(d)
+		return d
+	}
+
+	quo, rem := d, big.NewInt(0)
+	quo, rem = quo.QuoRem(d, precisionReuse, rem)
+	if rem.Sign() == 0 { // remainder is zero
+		return quo
+	}
+	quo.Add(quo, oneInt)
 	return quo
 }
 
