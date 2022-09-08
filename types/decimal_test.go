@@ -565,3 +565,73 @@ func BenchmarkMarshalTo(b *testing.B) {
 		}
 	}
 }
+
+func (s *decimalTestSuite) TestQuo() {
+	testCases := []struct {
+		input    sdk.Dec
+		denominator    sdk.Dec
+		expected sdk.Dec
+	}{
+		{sdk.OneDec(), sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("0.1")},                                         // 1.0 ^ (10) => 1.0
+		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("3"), sdk.MustNewDecFromStr("3.333333")},           // 3 ^ 3 => 27
+		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("6"), sdk.MustNewDecFromStr("1.666667")},           // 3 ^ 3 => 27
+	}
+
+	for i, tc := range testCases {
+		res := tc.input.Quo(tc.denominator)
+		s.Require().True(tc.expected.Equal(res), "unexpected result for test case %d, expected: %v, res: %v", i, tc.input, res)
+	}
+}
+
+func (s *decimalTestSuite) TestQuoRemoveRemainder() {
+	testCases := []struct {
+		input    sdk.Dec
+		denominator    sdk.Dec
+		expected sdk.Dec
+	}{
+		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("3"), sdk.MustNewDecFromStr("3.333333")},           // 3 ^ 3 => 27
+		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("6"), sdk.MustNewDecFromStr("1.666666")},           // 3 ^ 3 => 27
+		{sdk.MustNewDecFromStr("-10"), sdk.MustNewDecFromStr("6"), sdk.MustNewDecFromStr("-1.666666")},           // 3 ^ 3 => 27
+	}
+
+	for i, tc := range testCases {
+		res := tc.input.QuoRemoveRemainder(tc.denominator)
+		s.Require().True(tc.expected.Equal(res), "unexpected result for test case %d, expected: %v, res: %v", i, tc.input, res)
+	}
+}
+
+func (s *decimalTestSuite) TestMul() {
+	testCases := []struct {
+		input    sdk.Dec
+		denominator    sdk.Dec
+		expected sdk.Dec
+	}{
+		{sdk.OneDec(), sdk.MustNewDecFromStr("0.1"), sdk.MustNewDecFromStr("0.1")},
+		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111109")}, //3.333333*3.333333 = 11.1111088889
+		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777779")}, // 1.666667*1.666667=2.7777788889
+	}
+
+	for i, tc := range testCases {
+		res := tc.input.Mul(tc.denominator)
+		fmt.Println(res.String())
+		s.Require().True(tc.expected.Equal(res), "unexpected result for test case %d, expected: %v, res: %v", i, tc.input, res)
+	}
+}
+
+func (s *decimalTestSuite) TestMulRemoveRemainder() {
+	testCases := []struct {
+		input    sdk.Dec
+		denominator    sdk.Dec
+		expected sdk.Dec
+	}{
+		{sdk.OneDec(), sdk.MustNewDecFromStr("0.1"), sdk.MustNewDecFromStr("0.1")},
+		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111108")}, //3.333333*3.333333 = 11.1111088889
+		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777778")}, // 1.666667*1.666667=2.7777788889
+	}
+
+	for i, tc := range testCases {
+		res := tc.input.MulRemoveRemainder(tc.denominator)
+		fmt.Println(res.String())
+		s.Require().True(tc.expected.Equal(res), "unexpected result for test case %d, expected: %v, res: %v", i, tc.input, res)
+	}
+}
