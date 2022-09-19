@@ -339,7 +339,7 @@ func GetCmdSubmitFeeProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "fee-spend [proposal-file]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Submit a community pool spend proposal",
+		Short: "Submit a gas fee spend proposal",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Submit a community pool spend proposal along with an initial deposit.
 The proposal details must be supplied via a JSON file.
