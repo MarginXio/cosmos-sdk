@@ -72,6 +72,10 @@ func (csp CommunityPoolSpendProposal) String() string {
 }
 
 
+func NewFeeSpendProposal(title, description string, recipient sdk.AccAddress, amount sdk.Coins) *FeeSpendProposal {
+	return &FeeSpendProposal{title, description, recipient.String(), amount}
+}
+
 // GetTitle returns the title of a community pool spend proposal.
 func (csp *FeeSpendProposal) GetTitle() string { return csp.Title }
 
