@@ -88,7 +88,7 @@ func TestMigrate(t *testing.T) {
     {
       "@type": "/cosmos.auth.v1beta1.BaseAccount",
       "account_number": "1",
-      "address": "cosmos13syh7de9xndv9wmklccpfvc0d8dcyvay4s6z6l",
+      "address": "0x8C097F372534DAC2bb76fE3014B30f69Db8233A4",
       "pub_key": {
         "@type": "/cosmos.crypto.secp256k1.PubKey",
         "key": "A8oWyJkohwy8XZ0Df92jFMBTtTPMvYJplYIrlEHTKPYk"
@@ -99,7 +99,7 @@ func TestMigrate(t *testing.T) {
       "@type": "/cosmos.auth.v1beta1.ModuleAccount",
       "base_account": {
         "account_number": "1",
-        "address": "cosmos1v57fx2l2rt6ehujuu99u2fw05779m5e2ux4z2h",
+        "address": "0x653C932BeA1aF59BF25ce14Bc525CfA7BC5DD32A",
         "pub_key": {
           "@type": "/cosmos.crypto.secp256k1.PubKey",
           "key": "AruDygh5HprMOpHOEato85dLgAsybMJVyxBGUa3KuWCr"
@@ -115,7 +115,7 @@ func TestMigrate(t *testing.T) {
       "@type": "/cosmos.vesting.v1beta1.BaseVestingAccount",
       "base_account": {
         "account_number": "1",
-        "address": "cosmos18hnp9fjflrkeeqn4gmhjhzljusxzmjeartdckw",
+        "address": "0x3De612a649f8ED9c827546ef2b8bF2E40C2dCb3d",
         "pub_key": {
           "@type": "/cosmos.crypto.secp256k1.PubKey",
           "key": "A5aEFDIdQHh0OYmNXNv1sHBNURDWWgVkXC2IALcWLLwJ"
@@ -147,7 +147,7 @@ func TestMigrate(t *testing.T) {
       "base_vesting_account": {
         "base_account": {
           "account_number": "1",
-          "address": "cosmos1t9kvvejvk6hjtddx6antck39s206csqduq3ke3",
+          "address": "0x596cc6664cB6aF25B5a6D766Bc5A25829FAC400D",
           "pub_key": {
             "@type": "/cosmos.crypto.secp256k1.PubKey",
             "key": "AoXDzxwTnljemHxfnJcwrKqODBP6Q2l3K3U3UhVDzyah"
@@ -171,7 +171,7 @@ func TestMigrate(t *testing.T) {
       "base_vesting_account": {
         "base_account": {
           "account_number": "1",
-          "address": "cosmos1s4ss9zquz7skvguechzlk3na635jdrecl0sgy2",
+          "address": "0x856102881c17a1662399c5c5fb467dd469268F38",
           "pub_key": {
             "@type": "/cosmos.crypto.secp256k1.PubKey",
             "key": "A2a4P4TQ1OKzpfu0eKnCoEtmTvoiclSx0G9higenUGws"
@@ -206,7 +206,7 @@ func TestMigrate(t *testing.T) {
       "base_vesting_account": {
         "base_account": {
           "account_number": "1",
-          "address": "cosmos1mcc6rwrj4hswf8p9ct82c7lmf77w9tuk07rha4",
+          "address": "0xDe31a1b872ade0e49C25c2CEAC7bFB4fbcE2Af96",
           "pub_key": {
             "@type": "/cosmos.crypto.secp256k1.PubKey",
             "key": "A4tuAfmZlhjK5cjp6ImR704miybHnITVNOyJORdDPFu3"
@@ -227,7 +227,7 @@ func TestMigrate(t *testing.T) {
     {
       "@type": "/cosmos.auth.v1beta1.BaseAccount",
       "account_number": "1",
-      "address": "cosmos16ydaqh0fcnh4qt7a3jme4mmztm2qel5axcpw00",
+      "address": "0xd11Bd05dE9c4ef502Fdd8CB79aEF625Ed40CFe9D",
       "pub_key": null,
       "sequence": "0"
     }

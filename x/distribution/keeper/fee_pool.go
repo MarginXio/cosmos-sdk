@@ -28,3 +28,11 @@ func (k Keeper) DistributeFromFeePool(ctx sdk.Context, amount sdk.Coins, receive
 	k.SetFeePool(ctx, feePool)
 	return nil
 }
+
+func (k Keeper) DistributeFromFee(ctx sdk.Context, amount sdk.Coins, receiveAddr sdk.AccAddress) error {
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiveAddr, amount)
+	if err != nil {
+		return err
+	}
+	return nil
+}

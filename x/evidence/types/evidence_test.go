@@ -29,8 +29,8 @@ func TestEquivocation_Valid(t *testing.T) {
 	require.Equal(t, e.GetHeight(), e.Height)
 	require.Equal(t, e.Type(), types.TypeEquivocation)
 	require.Equal(t, e.Route(), types.RouteEquivocation)
-	require.Equal(t, e.Hash().String(), "1E10F9267BEA3A9A4AB5302C2C510CC1AFD7C54E232DA5B2E3360DFAFACF7A76")
-	require.Equal(t, e.String(), "height: 100\ntime: 2006-01-02T15:04:05Z\npower: 1000000\nconsensus_address: cosmosvalcons1vehk7h6lta047h6lta047h6lta047h6l8m4r53\n")
+	require.Equal(t, e.Hash().String(), "93707E4C05DB40E8F061301C3911BE4933B5E40AC043D5BD86444C6EBDA964EB")
+	require.Equal(t, e.String(), "height: 100\ntime: 2006-01-02T15:04:05Z\npower: 1000000\nconsensus_address: 0x666F6F5F5F5F5f5f5f5f5f5F5f5f5f5F5f5F5f5f\n")
 	require.NoError(t, e.ValidateBasic())
 }
 
@@ -64,7 +64,7 @@ func TestEvidenceAddressConversion(t *testing.T) {
 	tmEvidence := abci.Evidence{
 		Type: abci.EvidenceType_DUPLICATE_VOTE,
 		Validator: abci.Validator{
-			Address: []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			Address: []byte{},
 			Power:   100,
 		},
 		Height:           1,

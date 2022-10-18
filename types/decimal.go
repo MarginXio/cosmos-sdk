@@ -20,7 +20,7 @@ type Dec struct {
 
 const (
 	// number of decimal places
-	Precision = 18
+	Precision = 6
 
 	// bits required to represent the above precision
 	// Ceiling[Log2[10^Precision - 1]]
@@ -259,6 +259,26 @@ func (d Dec) Mul(d2 Dec) Dec {
 	return Dec{chopped}
 }
 
+func (d Dec) MulAddOne(d2 Dec) Dec {
+	mul := new(big.Int).Mul(d.i, d2.i)
+	chopped := chopPrecisionAndRoundAddOne(mul)
+
+	if chopped.BitLen() > maxDecBitLen {
+		panic("Int overflow")
+	}
+	return Dec{chopped}
+}
+
+func (d Dec) MulRemoveRemainder(d2 Dec) Dec {
+	mul := new(big.Int).Mul(d.i, d2.i)
+	chopped := chopPrecisionAndRoundRemoveRemainder(mul)
+
+	if chopped.BitLen() > maxDecBitLen {
+		panic("Int overflow")
+	}
+	return Dec{chopped}
+}
+
 // multiplication truncate
 func (d Dec) MulTruncate(d2 Dec) Dec {
 	mul := new(big.Int).Mul(d.i, d2.i)
@@ -298,6 +318,33 @@ func (d Dec) Quo(d2 Dec) Dec {
 
 	quo := new(big.Int).Quo(mul, d2.i)
 	chopped := chopPrecisionAndRound(quo)
+
+	if chopped.BitLen() > maxDecBitLen {
+		panic("Int overflow")
+	}
+	return Dec{chopped}
+}
+
+func (d Dec) QuoAddOne(d2 Dec) Dec {
+	// multiply precision twice
+	mul := new(big.Int).Mul(d.i, precisionReuse)
+	mul.Mul(mul, precisionReuse)
+
+	quo := new(big.Int).Quo(mul, d2.i)
+	chopped := chopPrecisionAndRoundAddOne(quo)
+	if chopped.BitLen() > maxDecBitLen {
+		panic("Int overflow")
+	}
+	return Dec{chopped}
+}
+
+func (d Dec) QuoRemoveRemainder(d2 Dec) Dec {
+	// multiply precision twice
+	mul := new(big.Int).Mul(d.i, precisionReuse)
+	mul.Mul(mul, precisionReuse)
+
+	quo := new(big.Int).Quo(mul, d2.i)
+	chopped := chopPrecisionAndRoundRemoveRemainder(quo)
 
 	if chopped.BitLen() > maxDecBitLen {
 		panic("Int overflow")
@@ -543,6 +590,45 @@ func chopPrecisionAndRound(d *big.Int) *big.Int {
 		}
 		return quo.Add(quo, oneInt)
 	}
+}
+
+func chopPrecisionAndRoundRemoveRemainder(d *big.Int) *big.Int {
+	// remove the negative and add it back when returning
+	if d.Sign() == -1 {
+		// make d positive, compute chopped value, and then un-mutate d
+		d = d.Neg(d)
+		d = chopPrecisionAndRoundRemoveRemainder(d)
+		d = d.Neg(d)
+		return d
+	}
+
+	// get the truncated quotient and remainder
+	quo, rem := d, big.NewInt(0)
+	quo, rem = quo.QuoRem(d, precisionReuse, rem)
+
+	if rem.Sign() == 0 { // remainder is zero
+		return quo
+	}
+	return quo
+}
+
+func chopPrecisionAndRoundAddOne(d *big.Int) *big.Int {
+	// remove the negative and add it back when returning
+	if d.Sign() == -1 {
+		// make d positive, compute chopped value, and then un-mutate d
+		d = d.Neg(d)
+		d = chopPrecisionAndRoundAddOne(d)
+		d = d.Neg(d)
+		return d
+	}
+
+	quo, rem := d, big.NewInt(0)
+	quo, rem = quo.QuoRem(d, precisionReuse, rem)
+	if rem.Sign() == 0 { // remainder is zero
+		return quo
+	}
+	quo.Add(quo, oneInt)
+	return quo
 }
 
 func chopPrecisionAndRoundUp(d *big.Int) *big.Int {

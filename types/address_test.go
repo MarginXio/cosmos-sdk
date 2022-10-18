@@ -223,23 +223,24 @@ func (s *addressTestSuite) TestConfiguredPrefix() {
 		for times := 1; times < 20; times++ {
 			rand.Read(pub.Key[:])
 			// Test if randomly generated prefix of a given length works
-			prefix := RandString(length)
+			//prefix := RandString(length)
+			prefix := "0x"
 
 			// Assuming that GetConfig is not sealed.
 			config := types.GetConfig()
 			config.SetBech32PrefixForAccount(
-				prefix+types.PrefixAccount,
-				prefix+types.PrefixPublic)
+				prefix,
+				prefix)
 
 			acc := types.AccAddress(pub.Address())
 			s.Require().True(strings.HasPrefix(
 				acc.String(),
-				prefix+types.PrefixAccount), acc.String())
+				prefix), acc.String())
 
 			bech32Pub := legacybech32.MustMarshalPubKey(legacybech32.AccPK, pub)
 			s.Require().True(strings.HasPrefix(
 				bech32Pub,
-				prefix+types.PrefixPublic))
+				prefix))
 
 			config.SetBech32PrefixForValidator(
 				prefix+types.PrefixValidator+types.PrefixAddress,
@@ -248,12 +249,12 @@ func (s *addressTestSuite) TestConfiguredPrefix() {
 			val := types.ValAddress(pub.Address())
 			s.Require().True(strings.HasPrefix(
 				val.String(),
-				prefix+types.PrefixValidator+types.PrefixAddress))
+				prefix))
 
 			bech32ValPub := legacybech32.MustMarshalPubKey(legacybech32.ValPK, pub)
 			s.Require().True(strings.HasPrefix(
 				bech32ValPub,
-				prefix+types.PrefixValidator+types.PrefixPublic))
+				prefix))
 
 			config.SetBech32PrefixForConsensusNode(
 				prefix+types.PrefixConsensus+types.PrefixAddress,
@@ -262,12 +263,12 @@ func (s *addressTestSuite) TestConfiguredPrefix() {
 			cons := types.ConsAddress(pub.Address())
 			s.Require().True(strings.HasPrefix(
 				cons.String(),
-				prefix+types.PrefixConsensus+types.PrefixAddress))
+				prefix))
 
 			bech32ConsPub := legacybech32.MustMarshalPubKey(legacybech32.ConsPK, pub)
 			s.Require().True(strings.HasPrefix(
 				bech32ConsPub,
-				prefix+types.PrefixConsensus+types.PrefixPublic))
+				prefix))
 		}
 	}
 }
@@ -310,13 +311,13 @@ func (s *addressTestSuite) TestVerifyAddressFormat() {
 	err := types.VerifyAddressFormat(addr0)
 	s.Require().EqualError(err, "addresses cannot be empty: unknown address")
 	err = types.VerifyAddressFormat(addr5)
-	s.Require().NoError(err)
+	s.Require().EqualError(err, "address length must be 20, got 5: unknown address")
 	err = types.VerifyAddressFormat(addr20)
 	s.Require().NoError(err)
 	err = types.VerifyAddressFormat(addr32)
-	s.Require().NoError(err)
+	s.Require().EqualError(err, "address length must be 20, got 32: unknown address")
 	err = types.VerifyAddressFormat(addr256)
-	s.Require().EqualError(err, "address max length is 255, got 256: unknown address")
+	s.Require().EqualError(err, "address length must be 20, got 256: unknown address")
 }
 
 func (s *addressTestSuite) TestCustomAddressVerifier() {
@@ -329,7 +330,7 @@ func (s *addressTestSuite) TestCustomAddressVerifier() {
 	// The default verifier is nil, we're only checking address length is
 	// between 1-255 bytes.
 	err := types.VerifyAddressFormat(addr)
-	s.Require().Nil(err)
+	s.Require().Error(err)
 	_, err = types.AccAddressFromBech32(accBech)
 	s.Require().Nil(err)
 	_, err = types.ValAddressFromBech32(valBech)
@@ -350,11 +351,11 @@ func (s *addressTestSuite) TestCustomAddressVerifier() {
 	err = types.VerifyAddressFormat(addr)
 	s.Require().NotNil(err)
 	_, err = types.AccAddressFromBech32(accBech)
-	s.Require().NotNil(err)
+	s.Require().Nil(err)
 	_, err = types.ValAddressFromBech32(valBech)
-	s.Require().NotNil(err)
+	s.Require().Nil(err)
 	_, err = types.ConsAddressFromBech32(consBech)
-	s.Require().NotNil(err)
+	s.Require().Nil(err)
 
 	// Reinitialize the global config to default address verifier (nil)
 	types.GetConfig().SetAddressVerifier(nil)
@@ -375,10 +376,10 @@ func (s *addressTestSuite) TestBech32ifyAddressBytes() {
 	}{
 		{"empty address", args{"prefixa", []byte{}}, "", false},
 		{"empty prefix", args{"", addr20byte}, "", true},
-		{"10-byte address", args{"prefixa", addr10byte}, "prefixa1qqqsyqcyq5rqwzqf3953cc", false},
-		{"10-byte address", args{"prefixb", addr10byte}, "prefixb1qqqsyqcyq5rqwzqf20xxpc", false},
-		{"20-byte address", args{"prefixa", addr20byte}, "prefixa1qqqsyqcyq5rqwzqfpg9scrgwpugpzysn7hzdtn", false},
-		{"20-byte address", args{"prefixb", addr20byte}, "prefixb1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnrujsuw", false},
+		{"10-byte address", args{"prefixa", addr10byte}, "0x0000000000000000000000010203040506070809", false},
+		{"10-byte address", args{"prefixb", addr10byte}, "0x0000000000000000000000010203040506070809", false},
+		{"20-byte address", args{"prefixa", addr20byte}, "0x000102030405060708090a0b0c0d0e0f10111213", false},
+		{"20-byte address", args{"prefixb", addr20byte}, "0x000102030405060708090a0b0c0d0e0f10111213", false},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -408,10 +409,10 @@ func (s *addressTestSuite) TestMustBech32ifyAddressBytes() {
 	}{
 		{"empty address", args{"prefixa", []byte{}}, "", false},
 		{"empty prefix", args{"", addr20byte}, "", true},
-		{"10-byte address", args{"prefixa", addr10byte}, "prefixa1qqqsyqcyq5rqwzqf3953cc", false},
-		{"10-byte address", args{"prefixb", addr10byte}, "prefixb1qqqsyqcyq5rqwzqf20xxpc", false},
-		{"20-byte address", args{"prefixa", addr20byte}, "prefixa1qqqsyqcyq5rqwzqfpg9scrgwpugpzysn7hzdtn", false},
-		{"20-byte address", args{"prefixb", addr20byte}, "prefixb1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnrujsuw", false},
+		{"10-byte address", args{"prefixa", addr10byte}, "0x0000000000000000000000010203040506070809", false},
+		{"10-byte address", args{"prefixb", addr10byte}, "0x0000000000000000000000010203040506070809", false},
+		{"20-byte address", args{"prefixa", addr20byte}, "0x000102030405060708090a0b0c0d0e0f10111213", false},
+		{"20-byte address", args{"prefixb", addr20byte}, "0x000102030405060708090a0b0c0d0e0f10111213", false},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -484,5 +485,5 @@ func (s *addressTestSuite) TestGetFromBech32() {
 	s.Require().Equal("decoding Bech32 address failed: must provide a non empty address", err.Error())
 	_, err = types.GetFromBech32("cosmos1qqqsyqcyq5rqwzqfys8f67", "x")
 	s.Require().Error(err)
-	s.Require().Equal("invalid Bech32 prefix; expected x, got cosmos", err.Error())
+	s.Require().Equal("invalid address length, expected: 42, got: 29", err.Error())
 }

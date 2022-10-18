@@ -237,8 +237,7 @@ func (s *IntegrationTestSuite) TestQuerySlashesGRPC() {
 func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 	val := s.network.Validators[0]
 	baseUrl := val.APIAddress
-
-	rewards, err := sdk.ParseDecCoins("9.8stake")
+	rewards, err := sdk.ParseDecCoins("0stake")
 	s.Require().NoError(err)
 
 	testCases := []struct {

@@ -20,7 +20,7 @@ func cloneAppend(bz []byte, tail []byte) (res []byte) {
 }
 
 func TestAddressFromBalancesStore(t *testing.T) {
-	addr, err := sdk.AccAddressFromBech32("cosmos1n88uc38xhjgxzw9nwre4ep2c8ga4fjxcar6mn7")
+	addr, err := sdk.AccAddressFromBech32("0x8464Cf197E0e577df711edF707763Be7DAE235A6")
 	require.NoError(t, err)
 	addrLen := len(addr)
 	require.Equal(t, 20, addrLen)

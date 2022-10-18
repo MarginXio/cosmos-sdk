@@ -241,6 +241,7 @@
     - [DelegationDelegatorReward](#cosmos.distribution.v1beta1.DelegationDelegatorReward)
     - [DelegatorStartingInfo](#cosmos.distribution.v1beta1.DelegatorStartingInfo)
     - [FeePool](#cosmos.distribution.v1beta1.FeePool)
+    - [FeeSpendProposal](#cosmos.distribution.v1beta1.FeeSpendProposal)
     - [Params](#cosmos.distribution.v1beta1.Params)
     - [ValidatorAccumulatedCommission](#cosmos.distribution.v1beta1.ValidatorAccumulatedCommission)
     - [ValidatorCurrentRewards](#cosmos.distribution.v1beta1.ValidatorCurrentRewards)
@@ -3729,6 +3730,24 @@ FeePool is the global fee pool for distribution.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `community_pool` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
+
+
+
+
+
+
+<a name="cosmos.distribution.v1beta1.FeeSpendProposal"></a>
+
+### FeeSpendProposal
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 

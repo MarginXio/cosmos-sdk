@@ -39,9 +39,9 @@ func TestRandomizedGenState(t *testing.T) {
 	var distrGenesis types.GenesisState
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &distrGenesis)
 
-	dec1, _ := sdk.NewDecFromStr("0.170000000000000000")
-	dec2, _ := sdk.NewDecFromStr("0.010000000000000000")
-	dec3, _ := sdk.NewDecFromStr("0.210000000000000000")
+	dec1, _ := sdk.NewDecFromStr("0.170000")
+	dec2, _ := sdk.NewDecFromStr("0.010000")
+	dec3, _ := sdk.NewDecFromStr("0.210000")
 
 	require.Equal(t, dec1, distrGenesis.Params.BaseProposerReward)
 	require.Equal(t, dec2, distrGenesis.Params.BonusProposerReward)

@@ -12,14 +12,12 @@ import (
 
 func TestEncodeAndDecode(t *testing.T) {
 	sum := sha256.Sum256([]byte("hello world\n"))
-	ss := "shasum"
+	ss := "0x"
 
 	bech, err := bech32.ConvertAndEncode(ss, sum[:])
 	require.NoError(t, err)
-
 	hrp, data, err := bech32.DecodeAndConvert(bech)
 	require.NoError(t, err)
-
 	require.Equal(t, hrp, ss, "Invalid hrp")
-	require.True(t, bytes.Equal(data, sum[:]), "Invalid decode")
+	require.True(t, bytes.Equal(data, sum[len(sum)-20:]), "Invalid decode")
 }

@@ -21,7 +21,7 @@ func TestParseKey(t *testing.T) {
 	}{
 		{"empty input", []string{""}, true},
 		{"invalid input", []string{"invalid"}, true},
-		{"bech32", []string{bech32str}, false},
+		{"bech32", []string{bech32str}, true},
 		{"hex", []string{hexstr}, false},
 	}
 	for _, tt := range tests {

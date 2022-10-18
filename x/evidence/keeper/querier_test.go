@@ -43,7 +43,7 @@ func (suite *KeeperTestSuite) TestQuerier_QueryEvidence_NonExisting() {
 	suite.populateEvidence(ctx, numEvidence)
 	query := abci.RequestQuery{
 		Path: strings.Join([]string{custom, types.QuerierRoute, types.QueryEvidence}, "/"),
-		Data: cdc.MustMarshalJSON(types.NewQueryEvidenceRequest([]byte("0000000000000000000000000000000000000000000000000000000000000000"))),
+		Data: cdc.MustMarshalJSON(types.NewQueryEvidenceRequest([]byte("0000"))),
 	}
 
 	bz, err := suite.querier(ctx, []string{types.QueryEvidence}, query)

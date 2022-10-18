@@ -17,7 +17,7 @@ func TestDecimalInternalTestSuite(t *testing.T) {
 
 func (s *decimalInternalTestSuite) TestPrecisionMultiplier() {
 	res := precisionMultiplier(5)
-	exp := big.NewInt(10000000000000)
+	exp := big.NewInt(10)
 	s.Require().Equal(0, res.Cmp(exp), "equality was incorrect, res %v, exp %v", res, exp)
 }
 
@@ -53,14 +53,14 @@ func (s *decimalInternalTestSuite) TestDecMarshalJSON() {
 		want    string
 		wantErr bool // if wantErr = false, will also attempt unmarshaling
 	}{
-		{"zero", decimal(0), "\"0.000000000000000000\"", false},
-		{"one", decimal(1), "\"0.000000000000000001\"", false},
-		{"ten", decimal(10), "\"0.000000000000000010\"", false},
-		{"12340", decimal(12340), "\"0.000000000000012340\"", false},
-		{"zeroInt", NewDec(0), "\"0.000000000000000000\"", false},
-		{"oneInt", NewDec(1), "\"1.000000000000000000\"", false},
-		{"tenInt", NewDec(10), "\"10.000000000000000000\"", false},
-		{"12340Int", NewDec(12340), "\"12340.000000000000000000\"", false},
+		{"zero", decimal(0), "\"0.000000\"", false},
+		{"one", decimal(1), "\"0.000001\"", false},
+		{"ten", decimal(10), "\"0.000010\"", false},
+		{"12340", decimal(12340), "\"0.012340\"", false},
+		{"zeroInt", NewDec(0), "\"0.000000\"", false},
+		{"oneInt", NewDec(1), "\"1.000000\"", false},
+		{"tenInt", NewDec(10), "\"10.000000\"", false},
+		{"12340Int", NewDec(12340), "\"12340.000000\"", false},
 	}
 	for _, tt := range tests {
 		tt := tt
