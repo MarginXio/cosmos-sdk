@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/hex"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	"io"
 	"os"
 	"path/filepath"
@@ -388,8 +389,15 @@ func (ks keystore) SaveLedgerKey(uid string, algo SignatureAlgo, hrp string, coi
 	}
 
 	hdPath := hd.NewFundraiserParams(account, coinType, index)
+	var priv types.LedgerPrivKey
+	var err error
 
-	priv, _, err := ledger.NewPrivKeySecp256k1(*hdPath, hrp)
+	if algo.Name() == ethsecp256k1.KeyType {
+		priv, _, err = ledger.NewPrivKeyETHSecp256k1(*hdPath, hrp)
+	}else {
+		priv, _, err = ledger.NewPrivKeySecp256k1(*hdPath, hrp)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to generate ledger key: %w", err)
 	}
@@ -614,7 +622,13 @@ func SignWithLedger(info Info, msg []byte) (sig []byte, pub types.PubKey, err er
 		return
 	}
 
-	priv, err := ledger.NewPrivKeySecp256k1Unsafe(*path)
+	var priv types.LedgerPrivKey
+
+	if info.GetPubKey().Type() == ethsecp256k1.KeyType {
+		priv, err = ledger.NewPrivKeyETHSecp256k1Unsafe(*path)
+	}else {
+		priv, err = ledger.NewPrivKeySecp256k1Unsafe(*path)
+	}
 	if err != nil {
 		return
 	}

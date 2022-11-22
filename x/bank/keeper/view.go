@@ -151,6 +151,8 @@ func (k BaseViewKeeper) IterateAllBalances(ctx sdk.Context, cb func(sdk.AccAddre
 		var balance sdk.Coin
 		k.cdc.MustUnmarshal(iterator.Value(), &balance)
 
+
+
 		if cb(address, balance) {
 			break
 		}

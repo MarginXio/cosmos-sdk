@@ -1,6 +1,7 @@
 package codec
 
 import (
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ethsecp256k1"
 	"github.com/tendermint/tendermint/crypto/sr25519"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -30,4 +31,9 @@ func RegisterCrypto(cdc *codec.LegacyAmino) {
 		ed25519.PrivKeyName, nil)
 	cdc.RegisterConcrete(&secp256k1.PrivKey{},
 		secp256k1.PrivKeyName, nil)
+
+	cdc.RegisterConcrete(&ethsecp256k1.PubKey{},
+		ethsecp256k1.PubKeyName, nil)
+	cdc.RegisterConcrete(&ethsecp256k1.PrivKey{},
+		ethsecp256k1.PrivKeyName, nil)
 }

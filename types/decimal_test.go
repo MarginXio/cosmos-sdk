@@ -11,6 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"strings"
 )
 
 type decimalTestSuite struct {
@@ -38,6 +39,7 @@ func (s *decimalTestSuite) TestNewDecFromStr() {
 
 	largestBigInt, ok := new(big.Int).SetString("33499189745056880149688856635597007162669032647290798121690100488888732861290034376435130433535", 10)
 	s.Require().True(ok)
+	println(sdk.NewDecFromBigIntWithPrec(largestBigInt, 6).String())
 
 	tests := []struct {
 		decimalStr string
@@ -68,7 +70,7 @@ func (s *decimalTestSuite) TestNewDecFromStr() {
 		{"0.foobar", true, sdk.Dec{}},
 		{"0.foobar.", true, sdk.Dec{}},
 		{"8888888888888888888888888888888888888888888888888888888888888888888844444440", false, sdk.NewDecFromBigInt(largerBigInt)},
-		{"33499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535", false, sdk.NewDecFromBigIntWithPrec(largestBigInt, 18)},
+		{"33499189745056880149688856635597007162669032647290798121690100488888732861290034376435130.433535", false, sdk.NewDecFromBigIntWithPrec(largestBigInt, 6)},
 		{"133499189745056880149688856635597007162669032647290798121690100488888732861291", true, sdk.Dec{}},
 	}
 
@@ -343,7 +345,7 @@ func (s *decimalTestSuite) TestDecCeil() {
 	}{
 		{sdk.NewDecWithPrec(1000, sdk.Precision), sdk.NewDec(1)},      // 0.001 => 1.0
 		{sdk.NewDecWithPrec(-1000, sdk.Precision), sdk.ZeroDec()},     // -0.001 => 0.0
-		{sdk.ZeroDec(), sdk.ZeroDec()},                                            // 0.0 => 0.0
+		{sdk.ZeroDec(), sdk.ZeroDec()},                                // 0.0 => 0.0
 		{sdk.NewDecWithPrec(900000, sdk.Precision), sdk.NewDec(1)},    // 0.9 => 1.0
 		{sdk.NewDecWithPrec(4001000, sdk.Precision), sdk.NewDec(5)},   // 4.001 => 5.0
 		{sdk.NewDecWithPrec(-4001000, sdk.Precision), sdk.NewDec(-4)}, // -4.001 => -4.0
@@ -363,12 +365,12 @@ func (s *decimalTestSuite) TestPower() {
 		power    uint64
 		expected sdk.Dec
 	}{
-		{sdk.OneDec(), 10, sdk.OneDec()},                                                   // 1.0 ^ (10) => 1.0
-		{sdk.NewDecWithPrec(5, 1), 2, sdk.NewDecWithPrec(25, 2)},                           // 0.5 ^ 2 => 0.25
-		{sdk.NewDecWithPrec(2, 1), 2, sdk.NewDecWithPrec(4, 2)},                            // 0.2 ^ 2 => 0.04
-		{sdk.NewDecFromInt(sdk.NewInt(3)), 3, sdk.NewDecFromInt(sdk.NewInt(27))},           // 3 ^ 3 => 27
-		{sdk.NewDecFromInt(sdk.NewInt(-3)), 4, sdk.NewDecFromInt(sdk.NewInt(81))},          // -3 ^ 4 = 81
-		{sdk.NewDecWithPrec(1414214, 6), 2, sdk.NewDecFromInt(sdk.NewInt(2))}, // 1.414213 ^ 2 = 2
+		{sdk.OneDec(), 10, sdk.OneDec()},                                          // 1.0 ^ (10) => 1.0
+		{sdk.NewDecWithPrec(5, 1), 2, sdk.NewDecWithPrec(25, 2)},                  // 0.5 ^ 2 => 0.25
+		{sdk.NewDecWithPrec(2, 1), 2, sdk.NewDecWithPrec(4, 2)},                   // 0.2 ^ 2 => 0.04
+		{sdk.NewDecFromInt(sdk.NewInt(3)), 3, sdk.NewDecFromInt(sdk.NewInt(27))},  // 3 ^ 3 => 27
+		{sdk.NewDecFromInt(sdk.NewInt(-3)), 4, sdk.NewDecFromInt(sdk.NewInt(81))}, // -3 ^ 4 = 81
+		{sdk.NewDecWithPrec(1414214, 6), 2, sdk.NewDecFromInt(sdk.NewInt(2))},     // 1.414213 ^ 2 = 2
 	}
 
 	for i, tc := range testCases {
@@ -383,14 +385,14 @@ func (s *decimalTestSuite) TestApproxRoot() {
 		root     uint64
 		expected sdk.Dec
 	}{
-		{sdk.OneDec(), 10, sdk.OneDec()},                                                       // 1.0 ^ (0.1) => 1.0
-		{sdk.NewDecWithPrec(25, 2), 2, sdk.NewDecWithPrec(5, 1)},                               // 0.25 ^ (0.5) => 0.5
-		{sdk.NewDecWithPrec(4, 2), 2, sdk.NewDecWithPrec(2, 1)},                                // 0.04 ^ (0.5) => 0.2
-		{sdk.NewDecFromInt(sdk.NewInt(27)), 3, sdk.NewDecFromInt(sdk.NewInt(3))},               // 27 ^ (1/3) => 3
-		{sdk.NewDecFromInt(sdk.NewInt(-81)), 4, sdk.NewDecFromInt(sdk.NewInt(-3))},             // -81 ^ (0.25) => -3
-		{sdk.NewDecFromInt(sdk.NewInt(2)), 2, sdk.NewDecWithPrec(1414213, 6)},     // 2 ^ (0.5) => 1.414213
+		{sdk.OneDec(), 10, sdk.OneDec()},                                           // 1.0 ^ (0.1) => 1.0
+		{sdk.NewDecWithPrec(25, 2), 2, sdk.NewDecWithPrec(5, 1)},                   // 0.25 ^ (0.5) => 0.5
+		{sdk.NewDecWithPrec(4, 2), 2, sdk.NewDecWithPrec(2, 1)},                    // 0.04 ^ (0.5) => 0.2
+		{sdk.NewDecFromInt(sdk.NewInt(27)), 3, sdk.NewDecFromInt(sdk.NewInt(3))},   // 27 ^ (1/3) => 3
+		{sdk.NewDecFromInt(sdk.NewInt(-81)), 4, sdk.NewDecFromInt(sdk.NewInt(-3))}, // -81 ^ (0.25) => -3
+		{sdk.NewDecFromInt(sdk.NewInt(2)), 2, sdk.NewDecWithPrec(1414213, 6)},      // 2 ^ (0.5) => 1.414213
 		{sdk.NewDecWithPrec(1005, 3), 31536000, sdk.MustNewDecFromStr("1.000000")}, // 1.005 ^ (1/31536000) ≈ 1.00000000016
-		{sdk.SmallestDec(), 2, sdk.NewDecWithPrec(1, 3)},                                       // 1e-18 ^ (0.5) => 1e-9
+		{sdk.SmallestDec(), 2, sdk.NewDecWithPrec(1, 3)},                           // 1e-18 ^ (0.5) => 1e-9
 		{sdk.SmallestDec(), 3, sdk.MustNewDecFromStr("0.009996")},                  // 1e-18 ^ (1/3) => 1e-6
 		{sdk.NewDecWithPrec(1, 6), 3, sdk.MustNewDecFromStr("0.009997")},           // 1e-8 ^ (1/3) ≈ 0.00215443469
 	}
@@ -411,12 +413,12 @@ func (s *decimalTestSuite) TestApproxSqrt() {
 		input    sdk.Dec
 		expected sdk.Dec
 	}{
-		{sdk.OneDec(), sdk.OneDec()},                                                    // 1.0 => 1.0
-		{sdk.NewDecWithPrec(25, 2), sdk.NewDecWithPrec(5, 1)},                           // 0.25 => 0.5
-		{sdk.NewDecWithPrec(4, 2), sdk.NewDecWithPrec(2, 1)},                            // 0.09 => 0.3
-		{sdk.NewDecFromInt(sdk.NewInt(9)), sdk.NewDecFromInt(sdk.NewInt(3))},            // 9 => 3
-		{sdk.NewDecFromInt(sdk.NewInt(-9)), sdk.NewDecFromInt(sdk.NewInt(-3))},          // -9 => -3
-		{sdk.NewDecFromInt(sdk.NewInt(2)), sdk.NewDecWithPrec(1414214, 6)}, // 2 => 1.414213
+		{sdk.OneDec(), sdk.OneDec()},                                           // 1.0 => 1.0
+		{sdk.NewDecWithPrec(25, 2), sdk.NewDecWithPrec(5, 1)},                  // 0.25 => 0.5
+		{sdk.NewDecWithPrec(4, 2), sdk.NewDecWithPrec(2, 1)},                   // 0.09 => 0.3
+		{sdk.NewDecFromInt(sdk.NewInt(9)), sdk.NewDecFromInt(sdk.NewInt(3))},   // 9 => 3
+		{sdk.NewDecFromInt(sdk.NewInt(-9)), sdk.NewDecFromInt(sdk.NewInt(-3))}, // -9 => -3
+		{sdk.NewDecFromInt(sdk.NewInt(2)), sdk.NewDecWithPrec(1414214, 6)},     // 2 => 1.414213
 	}
 
 	for i, tc := range testCases {
@@ -581,9 +583,9 @@ func BenchmarkMarshalTo(b *testing.B) {
 
 func (s *decimalTestSuite) TestQuo() {
 	testCases := []struct {
-		input    sdk.Dec
-		denominator    sdk.Dec
-		expected sdk.Dec
+		input       sdk.Dec
+		denominator sdk.Dec
+		expected    sdk.Dec
 	}{
 		{sdk.OneDec(), sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("0.1")},
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("3"), sdk.MustNewDecFromStr("3.333333")},
@@ -601,9 +603,9 @@ func (s *decimalTestSuite) TestQuo() {
 
 func (s *decimalTestSuite) TestQuoRemoveRemainder() {
 	testCases := []struct {
-		input    sdk.Dec
-		denominator    sdk.Dec
-		expected sdk.Dec
+		input       sdk.Dec
+		denominator sdk.Dec
+		expected    sdk.Dec
 	}{
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("3"), sdk.MustNewDecFromStr("3.333333")},
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("6"), sdk.MustNewDecFromStr("1.666666")},
@@ -620,9 +622,9 @@ func (s *decimalTestSuite) TestQuoRemoveRemainder() {
 
 func (s *decimalTestSuite) TestQuoRemoveQuoAddOne() {
 	testCases := []struct {
-		input    sdk.Dec
-		denominator    sdk.Dec
-		expected sdk.Dec
+		input       sdk.Dec
+		denominator sdk.Dec
+		expected    sdk.Dec
 	}{
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("3"), sdk.MustNewDecFromStr("3.333334")},
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("6"), sdk.MustNewDecFromStr("1.666667")},
@@ -639,13 +641,13 @@ func (s *decimalTestSuite) TestQuoRemoveQuoAddOne() {
 
 func (s *decimalTestSuite) TestMul() {
 	testCases := []struct {
-		input    sdk.Dec
-		denominator    sdk.Dec
-		expected sdk.Dec
+		input       sdk.Dec
+		denominator sdk.Dec
+		expected    sdk.Dec
 	}{
 		{sdk.OneDec(), sdk.MustNewDecFromStr("0.1"), sdk.MustNewDecFromStr("0.1")},
 		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111109")}, //3.333333*3.333333 = 11.1111088889
-		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777779")}, // 1.666667*1.666667=2.7777788889
+		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777779")},  // 1.666667*1.666667=2.7777788889
 	}
 
 	for i, tc := range testCases {
@@ -656,13 +658,13 @@ func (s *decimalTestSuite) TestMul() {
 
 func (s *decimalTestSuite) TestMulRemoveRemainder() {
 	testCases := []struct {
-		input    sdk.Dec
-		denominator    sdk.Dec
-		expected sdk.Dec
+		input       sdk.Dec
+		denominator sdk.Dec
+		expected    sdk.Dec
 	}{
 		{sdk.OneDec(), sdk.MustNewDecFromStr("0.1"), sdk.MustNewDecFromStr("0.1")},
-		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111108")}, //3.333333*3.333333 = 11.1111088889
-		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777778")}, // 1.666667*1.666667=2.7777788889
+		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111108")},  //3.333333*3.333333 = 11.1111088889
+		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777778")},   // 1.666667*1.666667=2.7777788889
 		{sdk.MustNewDecFromStr("-1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("-2.777778")}, // 1.666667*1.666667=2.7777788889
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("5"), sdk.MustNewDecFromStr("50")},
 		{sdk.MustNewDecFromStr("-10"), sdk.MustNewDecFromStr("5"), sdk.MustNewDecFromStr("-50")},
@@ -676,13 +678,13 @@ func (s *decimalTestSuite) TestMulRemoveRemainder() {
 
 func (s *decimalTestSuite) TestMulAddOne() {
 	testCases := []struct {
-		input    sdk.Dec
-		denominator    sdk.Dec
-		expected sdk.Dec
+		input       sdk.Dec
+		denominator sdk.Dec
+		expected    sdk.Dec
 	}{
 		{sdk.OneDec(), sdk.MustNewDecFromStr("0.1"), sdk.MustNewDecFromStr("0.1")},
-		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111109")}, //3.333333*3.333333 = 11.1111088889
-		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777779")}, // 1.666667*1.666667=2.7777788889
+		{sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("3.333333"), sdk.MustNewDecFromStr("11.111109")},  //3.333333*3.333333 = 11.1111088889
+		{sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("2.777779")},   // 1.666667*1.666667=2.7777788889
 		{sdk.MustNewDecFromStr("-1.666667"), sdk.MustNewDecFromStr("1.666667"), sdk.MustNewDecFromStr("-2.777779")}, // 1.666667*1.666667=2.7777788889
 		{sdk.MustNewDecFromStr("10"), sdk.MustNewDecFromStr("5"), sdk.MustNewDecFromStr("50")},
 		{sdk.MustNewDecFromStr("-10"), sdk.MustNewDecFromStr("5"), sdk.MustNewDecFromStr("-50")},
