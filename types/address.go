@@ -643,16 +643,23 @@ func GetFromBech32(bech32str, prefix string) ([]byte, error) {
 		return nil, errBech32EmptyAddress
 	}
 
-	hrp, bz, err := bech32.DecodeAndConvert(bech32str)
-	if err != nil {
-		return nil, err
-	}
+	if strings.HasPrefix(bech32str, prefix) {
+		hrp, bz, err := bech32.RealDecodeAndConvert(bech32str)
+		if err != nil {
+			return nil, err
+		}
 
-	if hrp != prefix {
-		//return nil, fmt.Errorf("invalid Bech32 prefix; expected %s, got %s", prefix, hrp)
+		if hrp != prefix {
+			return nil, fmt.Errorf("invalid Bech32 prefix; expected %s, got %s", prefix, hrp)
+		}
+		return bz, nil
+	} else {
+		_, bz, err := bech32.DecodeAndConvert(bech32str)
+		if err != nil {
+			return nil, err
+		}
+		return bz, nil
 	}
-
-	return bz, nil
 }
 
 func addressBytesFromHexString(address string) ([]byte, error) {
